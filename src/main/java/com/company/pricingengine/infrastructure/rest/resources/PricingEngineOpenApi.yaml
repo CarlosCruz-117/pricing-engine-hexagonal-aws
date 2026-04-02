@@ -1,0 +1,77 @@
+openapi: 3.0.1
+info:
+  title: Pricing Engine API
+  version: 1.0.0
+  description: API for calculating product prices based on application date
+
+paths:
+  /prices:
+    get:
+      summary: Get price
+      description: Calculates the applicable price for a product based on brand and date
+      operationId: getPrice
+
+      parameters:
+        - name: applicationDate
+          in: query
+          required: true
+          description: Application date in ISO format
+          schema:
+            type: string
+            format: date-time
+            example: "2020-06-14T10:00:00"
+
+        - name: productId
+          in: query
+          required: true
+          description: Product identifier
+          schema:
+            type: integer
+            format: int64
+            example: 35455
+
+        - name: brandId
+          in: query
+          required: true
+          description: Brand identifier
+          schema:
+            type: integer
+            format: int64
+            example: 1
+
+      responses:
+        '200':
+          description: Price found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceResponse'
+
+        '400':
+          description: Invalid input parameters
+
+        '404':
+          description: Price not found
+
+components:
+  schemas:
+    PriceResponse:
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int64
+        brandId:
+          type: integer
+          format: int64
+        priceList:
+          type: integer
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        price:
+          type: number
+          format: double
