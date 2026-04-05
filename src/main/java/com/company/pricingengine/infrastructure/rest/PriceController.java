@@ -1,5 +1,9 @@
 package com.company.pricingengine.infrastructure.rest;
 
+import com.company.pricingengine.application.usecase.GetPriceUseCase;
+import com.company.pricingengine.domain.model.Price;
+import com.company.pricingengine.infrastructure.dto.PriceResponseDTO;
+import com.company.pricingengine.infrastructure.rest.mapper.PriceDtoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,9 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/prices")
+@RequestMapping("/v1/prices")
 @Tag(name = "Prices", description = "Operations related to price calculation")
 public class PriceController {
+
+    private final GetPriceUseCase getPriceUseCase;
+    private final PriceDtoMapper priceDtoMapper;
+
+    public PriceController(GetPriceUseCase getPriceUseCase, PriceDtoMapper priceDtoMapper) {
+        this.getPriceUseCase = getPriceUseCase;
+        this.priceDtoMapper = priceDtoMapper;
+    }
 
     @GetMapping
     @Operation(
@@ -31,8 +43,8 @@ public class PriceController {
             @ApiResponse(responseCode = "404", description = "Price not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
-    // TODO - <?> deberá ser el nombre del DTO real cuano exista ¿PriceResponse?
-    public ResponseEntity<?> getPrice(
+
+    public ResponseEntity<PriceResponseDTO> getPrice(
             @Parameter(description = "Application date in ISO format (yyyy-MM-ddTHH:mm:ss)", required = true)
             @RequestParam
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -46,6 +58,8 @@ public class PriceController {
             @RequestParam
             Long brandId
     ) {
-        return ResponseEntity.ok().build();
+        Price price = getPriceUseCase.execute(productId, brandId, applicationDate);
+        return ResponseEntity.ok(priceDtoMapper.toDto(price));
     }
+
 }
