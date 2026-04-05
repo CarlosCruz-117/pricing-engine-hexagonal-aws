@@ -21,4 +21,4 @@ spring:
       ddl-auto: create-drop # Crea las tablas al arrancar (basándose en las @Entity)
   sql:
     init:
-      mode: always
+      mode: always # Fuerza que se procese el data.sql (registros bbdd)
