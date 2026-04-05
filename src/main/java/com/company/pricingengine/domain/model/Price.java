@@ -1,15 +1,20 @@
 package com.company.pricingengine.domain.model;
 
+import lombok.Builder;
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record Price(
-        Long brandId,
-        LocalDateTime startDate,
-        LocalDateTime endDate,
-        Long priceList,
-        Long productId,
-        Integer priority,
-        BigDecimal price,
-        String currency
-) {}
+@Getter
+@Builder
+public class Price{
+        private Long brandId;
+        private LocalDateTime startDate;
+        private LocalDateTime endDate;
+        private Long priceList;
+        private Long productId;
+        private Integer priority;
+        private BigDecimal price;
+        private String currency;
+}
