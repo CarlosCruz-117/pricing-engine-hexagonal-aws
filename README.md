@@ -7,10 +7,12 @@ El servicio expone un endpoint REST que permite obtener el precio aplicable a un
 🎯 Objetivo
 
 Dado:
+
 	• Fecha de aplicación
 	• ID de producto
 	• ID de cadena (brand)
 El sistema devuelve:
+
 	• Product ID
 	• Brand ID
 	• Tarifa aplicable (priceList)
