@@ -21,6 +21,7 @@ El sistema devuelve:
 🏗️ Arquitectura
 
 Se ha implementado usando Arquitectura Hexagonal:
+
 	• Domain → lógica de negocio
 	• Application → casos de uso (funcionalidades de negocio)
 	• Infrastructure → adaptadores (Controller REST, DB, config)
@@ -44,6 +45,7 @@ Se ha implementado usando Arquitectura Hexagonal:
 🧪 Testing (TDD)
 
 Se ha aplicado TDD:
+
 	1. Tests creados antes del código
 	2. Tests fallando inicialmente
 	3. Implementación progresiva hasta verde
@@ -97,6 +99,7 @@ docker build -t pricing-service .
 
 ☁️ AWS App Runner
 Se ha elegido App Runner por:
+
 	• Serverless
 	• Autoescalado
 	• Sin gestión de infraestructura
