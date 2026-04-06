@@ -5,6 +5,9 @@ import com.company.pricingengine.infrastructure.dto.PriceResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/**
+ * Mapper con MapStruct
+ */
 @Mapper(componentModel = "spring")
 public interface PriceDtoMapper {
 
