@@ -4,6 +4,9 @@ import com.company.pricingengine.domain.model.Price;
 import com.company.pricingengine.infrastructure.repository.PriceEntity;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper con patrón Builder
+ */
 @Component
 public class PriceMapper {
 

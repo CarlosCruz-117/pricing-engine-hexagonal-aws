@@ -27,7 +27,7 @@ class PriceControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     /**
-     * Testea a partir de un CSV los casos de HTTP 200 OK sobre la bbdd H2 local.
+     * Testea a partir de prices-test-data.csv los casos de HTTP 200 OK sobre la bbdd H2 local.
      * Si se desea añadir más casos a probar OK, se deben añadir al fichero CSV
      * @param applicationDate
      * @param productId
