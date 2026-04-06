@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,14 +17,16 @@ public class PriceRepositoryAdapter implements PriceRepositoryPort {
     private final PriceMapper mapper;
 
     @Override
-    public Optional<Price> findApplicablePrice(Long productId, Long brandId, LocalDateTime applicationDate) {
+    public List<Price> findPrices(Long productId, Long brandId, LocalDateTime applicationDate) {
         return repository
-                .findFirstByProductIdAndBrandIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
+                .findByProductIdAndBrandIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
                         productId,
                         brandId,
                         applicationDate,
                         applicationDate
-                )
-                .map(mapper::toDomainModel);
+                ).stream()
+                .map(mapper::toDomainModel)
+                .toList();
+
     }
 }
