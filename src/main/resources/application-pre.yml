@@ -1,0 +1,23 @@
+spring:
+  h2:
+    console:
+      enabled: false  # Deshabilitada en entornos no locales
+  datasource:
+    url: jdbc:h2:mem:pricingdb_pre
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false  # Sin SQL en consola
+    hibernate:
+      ddl-auto: create-drop
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    root: INFO
+    com.pricing: INFO
+    org.hibernate.SQL: WARN

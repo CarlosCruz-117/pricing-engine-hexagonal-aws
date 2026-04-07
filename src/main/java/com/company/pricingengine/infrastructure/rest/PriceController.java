@@ -1,8 +1,9 @@
 package com.company.pricingengine.infrastructure.rest;
 
-import com.company.pricingengine.application.usecase.GetPriceUseCase;
 import com.company.pricingengine.domain.model.Price;
+import com.company.pricingengine.infrastructure.config.UseCaseConfig;
 import com.company.pricingengine.infrastructure.dto.PriceResponseDTO;
+import com.company.pricingengine.infrastructure.repository.CachedPriceRepositoryAdapter;
 import com.company.pricingengine.infrastructure.rest.mapper.PriceDtoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,11 +25,13 @@ import java.time.LocalDateTime;
 @Tag(name = "Prices", description = "Operations related to price calculation")
 public class PriceController {
 
-    private final GetPriceUseCase getPriceUseCase;
+    private final UseCaseConfig useCaseConfig ;
+    private final CachedPriceRepositoryAdapter cachedPriceRepositoryAdapter;
     private final PriceDtoMapper priceDtoMapper;
 
-    public PriceController(GetPriceUseCase getPriceUseCase, PriceDtoMapper priceDtoMapper) {
-        this.getPriceUseCase = getPriceUseCase;
+    public PriceController(UseCaseConfig useCaseConfig, CachedPriceRepositoryAdapter cachedPriceRepositoryAdapter, PriceDtoMapper priceDtoMapper) {
+        this.useCaseConfig = useCaseConfig;
+        this.cachedPriceRepositoryAdapter = cachedPriceRepositoryAdapter;
         this.priceDtoMapper = priceDtoMapper;
     }
 
@@ -58,7 +61,7 @@ public class PriceController {
             @RequestParam
             Long brandId
     ) {
-        Price price = getPriceUseCase.execute(productId, brandId, applicationDate);
+        Price price = useCaseConfig.getPriceQuery(cachedPriceRepositoryAdapter).execute(productId, brandId, applicationDate);
         return ResponseEntity.ok(priceDtoMapper.toDto(price));
     }
 
