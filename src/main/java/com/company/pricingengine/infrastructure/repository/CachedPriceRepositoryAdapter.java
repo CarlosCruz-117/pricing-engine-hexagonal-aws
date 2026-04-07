@@ -5,6 +5,7 @@ import com.company.pricingengine.domain.model.Price;
 import com.company.pricingengine.infrastructure.repository.jpa.PriceRepositoryAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import java.util.Optional;
  * Decorador de caché de PriceRepositoryAdapter.
  * Aislamos lógica de caché para no sobrecargar de responsabilidades al Adapter
  */
+@Primary
 @Component
 @RequiredArgsConstructor
 public class CachedPriceRepositoryAdapter implements PriceRepositoryPort {
