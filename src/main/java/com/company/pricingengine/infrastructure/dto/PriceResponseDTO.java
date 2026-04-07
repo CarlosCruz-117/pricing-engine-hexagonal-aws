@@ -9,5 +9,6 @@ public record PriceResponseDTO(
         Long priceList,
         LocalDateTime startDate,
         LocalDateTime endDate,
-        BigDecimal price
+        BigDecimal price,
+        String currency
 ) {}

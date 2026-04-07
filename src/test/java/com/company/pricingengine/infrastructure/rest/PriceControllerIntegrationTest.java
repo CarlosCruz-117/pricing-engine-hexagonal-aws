@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -81,5 +82,10 @@ class PriceControllerIntegrationTest {
         assertEquals(brandId, json.get("brandId").asLong());
         assertEquals(expectedPriceList, json.get("priceList").asInt());
         assertEquals(expectedPrice, json.get("price").asDouble());
+
+        assertNotNull(json.get("startDate"),  "startDate no debe ser null");
+        assertNotNull(json.get("endDate"),    "endDate no debe ser null");
+        assertNotNull(json.get("currency"),   "currency no debe ser null");
+        assertEquals("EUR", json.get("currency").asText());
     }
 }

@@ -18,5 +18,6 @@ public interface PriceDtoMapper {
     @Mapping(source = "startDate", target = "startDate")
     @Mapping(source = "endDate", target = "endDate")
     @Mapping(source = "price", target = "price")
+    @Mapping(source = "currency", target = "currency")
     PriceResponseDTO toDto(Price price);
 }

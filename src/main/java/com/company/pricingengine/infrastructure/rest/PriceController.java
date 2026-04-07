@@ -1,9 +1,8 @@
 package com.company.pricingengine.infrastructure.rest;
 
+import com.company.pricingengine.application.port.in.GetPriceQuery;
 import com.company.pricingengine.domain.model.Price;
-import com.company.pricingengine.infrastructure.config.UseCaseConfig;
 import com.company.pricingengine.infrastructure.dto.PriceResponseDTO;
-import com.company.pricingengine.infrastructure.repository.CachedPriceRepositoryAdapter;
 import com.company.pricingengine.infrastructure.rest.mapper.PriceDtoMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,13 +24,12 @@ import java.time.LocalDateTime;
 @Tag(name = "Prices", description = "Operations related to price calculation")
 public class PriceController {
 
-    private final UseCaseConfig useCaseConfig ;
-    private final CachedPriceRepositoryAdapter cachedPriceRepositoryAdapter;
+     // PriceRepositoryPort → CachedPriceRepositoryAdapter. El controller recibe GetPriceQuery ya construido.
+    private final GetPriceQuery getPriceQuery;
     private final PriceDtoMapper priceDtoMapper;
 
-    public PriceController(UseCaseConfig useCaseConfig, CachedPriceRepositoryAdapter cachedPriceRepositoryAdapter, PriceDtoMapper priceDtoMapper) {
-        this.useCaseConfig = useCaseConfig;
-        this.cachedPriceRepositoryAdapter = cachedPriceRepositoryAdapter;
+    public PriceController(GetPriceQuery getPriceQuery, PriceDtoMapper priceDtoMapper) {
+        this.getPriceQuery = getPriceQuery;
         this.priceDtoMapper = priceDtoMapper;
     }
 
@@ -61,7 +59,7 @@ public class PriceController {
             @RequestParam
             Long brandId
     ) {
-        Price price = useCaseConfig.getPriceQuery(cachedPriceRepositoryAdapter).execute(productId, brandId, applicationDate);
+        Price price = getPriceQuery.execute(productId, brandId, applicationDate);
         return ResponseEntity.ok(priceDtoMapper.toDto(price));
     }
 
