@@ -2,18 +2,22 @@ package com.company.pricingengine.infrastructure.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -26,6 +30,24 @@ class PriceControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    CacheManager cacheManager;
+
+    @BeforeEach
+    void clearCache() {
+        Objects.requireNonNull(cacheManager.getCache("prices")).clear();
+    }
+
+    static Stream<Object[]> priceScenarios() {
+        return Stream.of(
+                new Object[]{"2020-06-14T10:00:00", 35455L, 1L, 1, 35.50},
+                new Object[]{"2020-06-14T16:00:00", 35455L, 1L, 2, 25.45},
+                new Object[]{"2020-06-14T21:00:00", 35455L, 1L, 1, 35.50},
+                new Object[]{"2020-06-15T10:00:00", 35455L, 1L, 3, 30.50},
+                new Object[]{"2020-06-16T21:00:00", 35455L, 1L, 4, 38.95}
+        );
+    }
+
     /**
      * Testea a partir de prices-test-data.csv los casos de HTTP 200 OK sobre la bbdd H2 local.
      * Si se desea añadir más casos a probar OK, se deben añadir al fichero CSV
@@ -34,36 +56,30 @@ class PriceControllerIntegrationTest {
      * @param brandId
      * @param expectedPrice
      */
-    @ParameterizedTest(name = "Test {index}: Fecha {0}, Producto {1}, Cadena {2} => Esperado {3}€")
+    @ParameterizedTest(name = "Test {index}: {0} → product={1}, brand={2}, priceList={3}, price={4}")
     @CsvFileSource(resources = "/prices-test-data.csv", numLinesToSkip = 1)
-    void shouldReturnCorrectPriceForEachTestScenario(
+    void shouldReturnCorrectPriceForEachScenario(
             String applicationDate,
             Long productId,
             Long brandId,
-            Double expectedPrice) throws Exception {
+            Integer expectedPriceList,
+            Double expectedPrice
+    ) throws Exception {
 
         MvcResult result = mockMvc.perform(get("/v1/prices")
                         .param("applicationDate", applicationDate)
                         .param("productId", productId.toString())
                         .param("brandId", brandId.toString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productId").value(productId))
-                .andExpect(jsonPath("$.brandId").value(brandId))
-                .andExpect(jsonPath("$.price").value(expectedPrice))
                 .andReturn();
 
-        // Extraer el JSON de response
-        String responseBody = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        JsonNode json = objectMapper.readTree(
+                result.getResponse().getContentAsString(StandardCharsets.UTF_8)
+        );
 
-        JsonNode json = objectMapper.readTree(responseBody);
-        // Log por consola
-        System.out.println("\n*** PRODUCTO (SALIDA) ***");
-        System.out.println("Producto: " + json.get("productId"));
-        System.out.println("Brand: " + json.get("brandId"));
-        System.out.println("PriceList: " + json.get("priceList"));
-        System.out.println("StartDate: " + json.get("startDate"));
-        System.out.println("EndDate: " + json.get("endDate"));
-        System.out.println("Price: " + json.get("price"));
-        System.out.println("___________________________\n");
+        assertEquals(productId, json.get("productId").asLong());
+        assertEquals(brandId, json.get("brandId").asLong());
+        assertEquals(expectedPriceList, json.get("priceList").asInt());
+        assertEquals(expectedPrice, json.get("price").asDouble());
     }
 }

@@ -7,43 +7,50 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.time.LocalDateTime;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
      * Case price not found -> 404
-     * @param ex
      * @return custom HTTP 404 mssg
      */
     @ExceptionHandler(PriceNotFoundException.class)
     public ResponseEntity<CustomErrorResponse> handleNotFound(PriceNotFoundException ex) {
-
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new CustomErrorResponse("PRICE_NOT_FOUND", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(CustomErrorResponse.builder()
+                        .code("PRICE_NOT_FOUND")
+                        .message(ex.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
     }
 
     /**
      * Case invalid params -> 400
-     * @param ex Exception
      * @return custom HTTP 400 mssg
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<CustomErrorResponse> handleTypeMismatch(Exception ex) {
-
+    public ResponseEntity<CustomErrorResponse> handleInvalidParam() {
         return ResponseEntity.badRequest()
-                .body(new CustomErrorResponse("INVALID_PARAMETER", "Invalid parameter format"));
+                .body(CustomErrorResponse.builder()
+                        .code("INVALID_PARAMETER")
+                        .message("Invalid parameter format")
+                        .timestamp(LocalDateTime.now())
+                        .build());
     }
 
     /**
      * Case missing params -> 400
-     * @param ex Exception
      * @return custom HTTP 400 mssg
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<CustomErrorResponse> handleMissingParams(Exception ex) {
-
+    public ResponseEntity<CustomErrorResponse> handleMissingParam(MissingServletRequestParameterException ex) {
         return ResponseEntity.badRequest()
-                .body(new CustomErrorResponse("MISSING_PARAMETER", ex.getMessage()));
+                .body(CustomErrorResponse.builder()
+                        .code("MISSING_PARAMETER")
+                        .message(ex.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
     }
 }
