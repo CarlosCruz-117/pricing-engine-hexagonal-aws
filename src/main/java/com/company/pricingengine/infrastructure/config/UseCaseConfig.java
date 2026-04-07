@@ -1,18 +1,15 @@
 package com.company.pricingengine.infrastructure.config;
 
-import com.company.pricingengine.application.port.out.PriceRepositoryPort;
-import com.company.pricingengine.application.usecase.GetPriceUseCase;
+import com.company.pricingengine.application.port.in.GetPriceQuery;
+import com.company.pricingengine.domain.service.PriceSelector;
+import com.company.pricingengine.infrastructure.repository.CachedPriceRepositoryAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class UseCaseConfig {
-
-    /** Declaramos Bean fuera de capa "application" -> Inversión de dependencias (SOLID - D) */
     @Bean
-    public GetPriceUseCase getPriceUseCase(
-            PriceRepositoryPort repository
-    ) {
-        return new GetPriceUseCase(repository);
+    public GetPriceQuery getPriceQuery(CachedPriceRepositoryAdapter repository) {
+        return new PriceSelector(repository);
     }
 }

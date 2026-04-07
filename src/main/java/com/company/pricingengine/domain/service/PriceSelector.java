@@ -1,17 +1,23 @@
 package com.company.pricingengine.domain.service;
 
+import com.company.pricingengine.application.port.in.GetPriceQuery;
+import com.company.pricingengine.application.port.out.PriceRepositoryPort;
+import com.company.pricingengine.domain.exceptions.PriceNotFoundException;
 import com.company.pricingengine.domain.model.Price;
-import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
-import java.util.List;
+import java.time.LocalDateTime;
 
-@Component
-public class PriceSelector {
+public class PriceSelector implements GetPriceQuery {
 
-    public Price selectHighestPriority(List<Price> prices) {
-        return prices.stream()
-                .max(Comparator.comparing(Price::getPriority))
-                .orElseThrow(() -> new IllegalStateException("No price found"));
+    private final PriceRepositoryPort repository;
+
+    public PriceSelector(PriceRepositoryPort repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public Price execute(Long productId, Long brandId, LocalDateTime date) {
+        return repository.findTopPrice(productId, brandId, date)
+                .orElseThrow(() -> new PriceNotFoundException(productId, brandId, date));
     }
 }

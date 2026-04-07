@@ -3,13 +3,9 @@ package com.company.pricingengine.application.port.out;
 import com.company.pricingengine.domain.model.Price;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 public interface PriceRepositoryPort {
 
-    List<Price> findPrices(
-            Long productId,
-            Long brandId,
-            LocalDateTime applicationDate
-    );
+    Optional<Price> findTopPrice(Long productId, Long brandId, LocalDateTime date);
 }
