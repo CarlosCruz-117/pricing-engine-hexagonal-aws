@@ -2,7 +2,7 @@ package com.company.pricingengine.domain.service;
 
 import com.company.pricingengine.application.port.in.GetPriceQuery;
 import com.company.pricingengine.application.port.out.PriceRepositoryPort;
-import com.company.pricingengine.domain.exceptions.PriceNotFoundException;
+import com.company.pricingengine.domain.exception.PriceNotFoundException;
 import com.company.pricingengine.domain.model.Price;
 
 import java.time.LocalDateTime;

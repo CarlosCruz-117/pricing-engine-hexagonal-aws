@@ -1,3 +1,10 @@
+# TODO - Parametrizaciones por entorno
+#variable "environment" {
+#  description = "DEV"
+#  type        = string
+#  default     = "dev"
+#}
+
 output "repository_url" {
   value = aws_ecr_repository.pricing_repo.repository_url
 }

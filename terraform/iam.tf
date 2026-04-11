@@ -25,17 +25,17 @@ resource "aws_ecr_repository_policy" "pricing_repo_policy" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "AllowAppRunnerPull"
-        Effect = "Allow"
-        Principal = "*"
-        Action = [
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "ecr:BatchCheckLayerAvailability"
-        ]
+    Statement = [{
+      Sid    = "AllowAppRunnerPull"
+      Effect = "Allow"
+      Principal = {
+        Service = "build.apprunner.amazonaws.com"  # Solo permitir App Runner; No "*" (cualquiera)
       }
-    ]
+      Action = [
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "ecr:BatchCheckLayerAvailability"
+      ]
+    }]
   })
 }
