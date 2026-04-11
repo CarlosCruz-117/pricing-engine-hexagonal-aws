@@ -2,11 +2,11 @@ package com.company.pricingengine.infrastructure.repository;
 
 import com.company.pricingengine.application.port.out.PriceRepositoryPort;
 import com.company.pricingengine.domain.model.Price;
-import com.company.pricingengine.infrastructure.repository.jpa.PriceRepositoryAdapter;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -16,9 +16,14 @@ import java.util.Optional;
  */
 @Primary
 @Component
-@RequiredArgsConstructor
 public class CachedPriceRepositoryAdapter implements PriceRepositoryPort {
-    private final PriceRepositoryAdapter delegate;
+    private final PriceRepositoryPort portDelegate;
+
+    public CachedPriceRepositoryAdapter(
+            @Qualifier("priceRepositoryAdapter") PriceRepositoryPort portDelegate
+    ) {
+        this.portDelegate = portDelegate;
+    }
 
     @Cacheable(
             value = "prices",
@@ -27,7 +32,7 @@ public class CachedPriceRepositoryAdapter implements PriceRepositoryPort {
     )
     @Override
     public Optional<Price> findTopPrice(Long productId, Long brandId, LocalDateTime date) {
-        return delegate.findTopPrice(productId, brandId, date);
+        return portDelegate.findTopPrice(productId, brandId, date);
     }
 }
 

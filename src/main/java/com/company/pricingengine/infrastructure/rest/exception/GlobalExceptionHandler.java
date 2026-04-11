@@ -1,5 +1,7 @@
-package com.company.pricingengine.domain.exceptions;
+package com.company.pricingengine.infrastructure.rest.exception;
 
+import com.company.pricingengine.domain.exception.CustomErrorResponse;
+import com.company.pricingengine.domain.exception.PriceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
